@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <title>Angular</title>
+</head>
+
+<body ng-app="myApp" ng-controller='myCtrl' ng-init="[_firstName = 'Samir',_lastName='Dave',funtest()]" style="color: {{_fontColor}}; background-image: url({{stepsModel[0]}}); background-color: {{displycolor}};">
+    <div style="padding-bottom: 50px;">
+        <h1 style="justify-content: center;display:flex;background-color: gray;color: white;">{{_welcomemsg}}</h1>
+
+        <p>Name: <input type="text" ng-model="name"></p>
+        <input type="button" ng-click="btnClick()" value="Press here"/>
+        <p ng-bind="name"></p>
+        <h1>{{_firstName}} {{_lastName}}</h1> 
+        <h2>{{_ScoreName}}</h2>
+        <input type="text" ng-model="ColorModel" ng-change="setsessionval()" placeholder="Enter bg color here..."/>
+
+        <input type="file" onchange="angular.element(this).scope().imageUpload(event)" ng-model="FiLL_"> 
+        
+
+        <!-- Loop in Angular --><br><br><br>
+        <h3>Loop Example</h3>
+        <span ng-repeat="_item in _arr">{{_item}}</span> 
+
+
+        <!-- Filter -->
+        <h3 style="justify-content: center;display:flex">Filters</h3>
+        <h2>{{_Filter1 | uppercase}}</h2>
+
+
+        <!-- Search BOX -->
+        <h2 style="justify-content: center;display:flex">Search here</h2>
+        <input type="text" ng-model="_txt"/>
+        <li ng-repeat="_item in _searchArr  | filter:_txt">
+            {{_item}}
+        </li>
+
+
+        <!-- Sorting  -->
+        <h2 style="justify-content: center;display:flex">Sorting here</h2>
+        <table class="table" border="1" width="100%">
+            <tr>
+                <th ng-click="[_sortVar = 'name']">Name</th>
+                <th ng-click="[_sortVar = 'country']">Country</th>
+            </tr>
+            <tr ng-repeat="_item in _sortArr | orderBy:_sortVar">
+                <td>{{_item.name}}</td>
+                <td>{{_item.country}}</td>
+            </tr>
+        </table>
+
+
+        <!-- Binding Form Elements  -->
+        <h2 style="justify-content: center;display:flex">Sorting here</h2>
+
+        <select>
+            <option ng-disabled="_item.name == 'chandan'" ng-repeat="_item in _sortArr" :value="_item.name">{{_item.name}}</option>
+        </select>
+
+        <select ng-model="selectedName" ng-options="_item.name for _item in _sortArr">
+        </select>
+
+        <input type="checkbox" ng-model="_checkbox">
+        <span>{{_checkbox}}</span>
+
+        <input type="button" value="Click!!" ng-click="[_checkbox = !_checkbox]">
+
+
+        <!-- Hide/Show  -->
+        <h2 style="justify-content: center;display:flex">Hide/Show</h2>
+        <input value="Click to hide/show" type="button" ng-click="[_disShow = !_disShow]"  ng-dblclick="[_textSpan = 'You have clicked me twice!!']" 
+        ng-mouseenter="[_textSpan = 'You came over me!']"> 
+        <span ng-show="_disShow">{{_textSpan}}</span>
+
+
+        <!-- Watchers -->
+        <h2 style="justify-content: center;display:flex">Watchers</h2>
+        <input type="text" ng-model="_varWatcher" placeholder="Enter text here..."> <span>{{_watchP}}</span>
+    </div>
+</body>
+
+<script type="text/javascript">
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope) {
+    $scope._welcomemsg = '';
+    $scope._ScoreName= "Welcome";
+    $scope.displycolor = localStorage.getItem('_varColor');
+    $scope._arr = ['1','3','5','2'];
+    $scope._Filter1 = 'angular';
+    $scope._searchArr = ['vikalp','samir','chandan','aditya','ankit','parth','vivek','prince'];
+    $scope._sortArr  = [{name:'vikalp',country:'india'},{name:'samir',country:'japan'},{name:'chandan',country:'america'},{name:'aditya',country:'china'}  ];
+    $scope._sortVar = '';
+    $scope._disShow = true;
+    $scope._textSpan = 'Please hide me!';
+    $scope._textSpan2 = 'Type here..';
+    $scope.stepsModel = [];
+    $scope.FiLL_ = "";
+    $scope._fontColor = 'black';
+
+    $scope.funtest = function(){
+        $scope._welcomemsg = 'Welcome to the Angular World.';
+    },
+
+    $scope.btnClick = function(){
+        alert('Button is pressed!');
+    },
+
+    $scope.setsessionval = function(){
+        localStorage.setItem('_varColor',$scope.ColorModel);
+        $scope.displycolor = localStorage.getItem('_varColor');
+    },
+
+    $scope.imageUpload = function(){
+         var files = event.target.files; 
+         $scope.stepsModel = [];
+
+         for (var i = 0; i < files.length; i++) {
+             var file = files[i];
+                 var reader = new FileReader();
+                 reader.onload = $scope.imageIsLoaded; 
+                 reader.readAsDataURL(file);
+         }
+         $scope.FiLL_ = null;
+         $scope._fontColor = 'white';
+    },
+
+    $scope.imageIsLoaded = function(e){
+        $scope.$apply(function() {
+            $scope.stepsModel.push(e.target.result);
+        });
+    },
+
+    $scope.$watch('_varWatcher',function(new_,old_){
+        $scope._watchP = 'New Val : ' + new_ + ' Old Val : ' + old_;
+    }
+    
+    );
+
+    });
+</script>
+</html>
